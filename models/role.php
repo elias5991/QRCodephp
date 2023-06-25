@@ -3,12 +3,12 @@
 class Role
 {
     public $id,     // int
-        $role;      // string
+        $value;      // string
 
-    public function __construct($id, $role)
+    public function __construct($id, $value)
     {
         $this->id = $id;
-        $this->role = $role;
+        $this->value = $value;
     }
 
     /**

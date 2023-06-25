@@ -6,6 +6,8 @@ require_once('../responses/error-response.php');
 require_once('../responses/valid-response.php');
 require_once('../models/role.php');
 require_once('../models/account-type.php');
+require_once('../responses/success-response.php');
+
 
 /** Used to call the function needed. */
 require_once('../utils/url.php');
@@ -113,10 +115,10 @@ function insertNewUser($data)
         $mysqli->close();
         exit(0);
     }
-    $valueToAdd = new Account (null,$data->email,null,$data->typeID,$data->password,$data->firstname,$data->lastName,null,$data->phoneNumber);
+    $valueToAdd = new Account (null,$data->email,null,$data->typeID,$data->password,$data->firstName,$data->lastName,null,$data->roleID,$data->phoneNumber);
     if ($valueToAdd->valueExists($mysqli)) {
         header("HTTP/1.1 500 Internal Server Error");
-        echo json_encode(new ErrorResponse("Duplicated User Type"));
+        echo json_encode(new ErrorResponse("Duplicated User"));
         $mysqli->close();
         exit(0);
     }
@@ -163,12 +165,7 @@ function updateUser($data)
         $mysqli->close();
         exit(0);
     }
-    if (!isset($data->password) || empty($data->password)) {
-        header("HTTP/1.1 500 Internal Server Error");
-        echo json_encode(new ErrorResponse("Password required"));
-        $mysqli->close();
-        exit(0);
-    }
+    
     if (!isset($data->roleID) || empty($data->roleID)) {
         header("HTTP/1.1 500 Internal Server Error");
         echo json_encode(new ErrorResponse("Role required"));
@@ -187,7 +184,7 @@ function updateUser($data)
         $mysqli->close();
         exit(0);
     }
-    $valueToUpdate = new Account ($data->id,$data->email,null,$data->typeID,$data->password,$data->firstname,$data->lastName,null,$data->phoneNumber);
+    $valueToUpdate = new Account ($data->id,$data->email,null,$data->typeID,null,$data->firstName,$data->lastName,null,$data->roleID,$data->phoneNumber);
     if ($valueToUpdate->sameValue($mysqli)) {
         header("HTTP/1.1 500 Internal Server Error");
         echo json_encode(new ErrorResponse("You Didn't Change Data"));
@@ -231,9 +228,9 @@ function deleteUser($data)
     }
     $valueToDelete = new Account ($data->id,null,null,null,null,null,null,null,null,null);
 
-    if (!$valueToDelete->valueExists($mysqli)) {
+    if (!$valueToDelete->idExists($mysqli)) {
         header("HTTP/1.1 500 Internal Server Error");
-        echo json_encode(new ErrorResponse("Room Type To Be Deleted Does Not Exist"));
+        echo json_encode(new ErrorResponse("User To Be Deleted Does Not Exist"));
         $mysqli->close();
         exit(0);
     }
@@ -245,6 +242,6 @@ function deleteUser($data)
         $mysqli->close();
         exit(0);
     }
-    echo json_encode(new SuccessResponse("Room Deleted Successfully"));
+    echo json_encode(new SuccessResponse("Deleted Successfully"));
     $mysqli->close();
 }

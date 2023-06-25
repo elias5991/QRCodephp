@@ -3,12 +3,12 @@
 class AccountType
 {
     public $id,     // int
-        $type;      // string
+        $value;      // string
 
-    public function __construct($id, $type)
+    public function __construct($id, $value)
     {
         $this->id = $id;
-        $this->type = $type;
+        $this->value = $value;
     }
 
     /**
