@@ -100,6 +100,31 @@ class Room
         return false;
     }
 
-
+    public function getRoomById($mysqli)
+    {
+        $query = "select 
+        r.id,
+        r.name as room_name,
+        r.type_id,
+        rt.type,
+        r.space,
+        r.department_id,
+        d.name as department_name,
+        r.faculty_id,
+        f.name as faculty_name
+        from room r
+        join room_type rt on r.type_id=rt.id
+        join department d on d.id=r.department_id
+        join faculty f on f.id =r.faculty_id
+        where r.id=".$this->id.";";
+        $result = mysqli_query($mysqli, $query);
+        if (mysqli_num_rows($result) < 1) return [];
+        $result = mysqli_fetch_all($result, MYSQLI_ASSOC);
+        $result = $result[0];
+        return new Room($result["id"], $result["room_name"], 
+            $result["type_id"], $result["type"],$result["space"],$result["department_id"],$result["department_name"]
+            ,$result["faculty_id"],$result["faculty_name"]);
+       
+    }
 
 }

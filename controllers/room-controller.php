@@ -2,6 +2,7 @@
 
 require_once('../utils/connection.php');
 require_once('../utils/authentication.php');
+require_once('../responses/valid-response.php');
 require_once('../models/role.php');
 require_once('../models/account-type.php');
 require_once('../responses/error-response.php');
@@ -198,5 +199,35 @@ function deleteRoom($data)
         exit(0);
     }
     echo json_encode(new SuccessResponse("Room Deleted Successfully"));
+    $mysqli->close();
+}
+
+function roomExists()
+{
+    if (!requestMethodCheck('GET')) {
+        header("HTTP/1.1 500 Internal Server Error");
+        echo json_encode(new ErrorResponse("Method not allowed"));
+        exit(0);
+    }
+    $room = new Room ($_GET['roomId'],null,null,null,null,null,null,null,null);
+
+
+    $mysqli = connect();
+    echo json_encode(new Valid($room->idExists($mysqli)));
+    $mysqli->close();
+}
+
+function getCurrentRoom()
+{
+    if (!requestMethodCheck('GET')) {
+        header("HTTP/1.1 500 Internal Server Error");
+        echo json_encode(new ErrorResponse("Method not allowed"));
+        exit(0);
+    }
+    $room = new Room ($_GET['roomId'],null,null,null,null,null,null,null,null);
+
+
+    $mysqli = connect();
+    echo json_encode($room->getRoomById($mysqli));
     $mysqli->close();
 }
